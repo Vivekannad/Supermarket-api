@@ -11,7 +11,10 @@ const authHandler = (req, res, next) => {
     try {
         const token = authorization.split(" ")[1];
         const user = verifyToken(token);
-
+        if (!user) {
+            return res.status(401).json({ message: "Incorrect token" });
+        }
+        
         req.user = user;
         next();
     } catch (err) {
@@ -20,7 +23,8 @@ const authHandler = (req, res, next) => {
 
 }
 const restrictTo = (allowed = []) => {
-  return (req, res, next) => {
+    return (req, res, next) => {
+      
     if (!allowed.includes(req.user.role)) {
       return res.status(403).json({ message: 'Forbidden' });
     }

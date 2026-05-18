@@ -1,4 +1,4 @@
-const { getAllProductsService, getAllCategoriesService, getProductByIdService, addProductService, addCategoryService, getProductsByCategoryService } = require("../models/productsModel");
+const { getAllProductsService, getAllCategoriesService, getProductByIdService, addProductService, addCategoryService, getProductsByCategoryService, removeProductService, editProductService } = require("../models/productsModel");
 
 
 //======================= user products controllers ====================
@@ -48,9 +48,9 @@ const getProductByIdHandler = async(req,res,next) => {
 // ======================= admin products controllers ====================
 
 const addProductHandler = async (req, res , next) => {
-    const {name='' , description , price , stock , category_ids} = req.body;
-    name = name.toLowerCase();
+    let {name='' , description= '', price = 0.00 , stock = 0, category_ids=[]} = req.body;
     try {
+        name = name.toLowerCase();
         // add product 
         const product = await addProductService({name , description , price , stock , category_ids});
         res.status(201).json({message : "Product added successfully" , product});
@@ -71,10 +71,32 @@ const addCategoryHandler = async (req, res, next) => {
 
 }
 
-const editProductHandler = async (req, res, err) => {
+const editProductHandler = async (req, res, next) => {
+    const { id } = req.params;
+    const {name , description , price , stock , category_ids} = req.body;
+
+    try {
+
+        const product = await editProductService({id , name , description , price , stock , category_ids});
+        res.status(200).json({message : "Product edited successfully" , product});
+
+    }catch(err){
+        next(err);
+    }
 }
 
-const removeProductHandler = async (req, res) => {
+const removeProductHandler = async (req, res , next) => {
+
+    const {id} = req.params;
+
+    try{
+
+        const product = await removeProductService(id);
+        res.status(200).json({message : "Product removed successfully" , product});
+
+    }catch(err){
+        next(err);
+    }
 
 }
 

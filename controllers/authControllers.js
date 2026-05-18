@@ -19,6 +19,11 @@ const loginUser = async(req,res , next) => {
 
     try{
         const user = await loginUserService(email);
+
+        if(!user){
+            return res.status(401).json({message : "Invalid credentials"});
+        }
+
         const isMatch = await bcrypt.compare(password , user.password);
         
         if(!isMatch){
