@@ -8,7 +8,10 @@ const { createProductsView } = require('./data/sql_views/productsViews');
 const { createCategoriesTable } = require('./data/tables/Categories');
 const { createProductCategoriesTable } = require('./data/tables/ProductCategories');
 const { createProductsTable } = require('./data/tables/Products');
-const productsRoute = require("./routes/productsRoute")
+const {createCartTable} = require("./data/tables/Cart.js")
+const {createCartItemsTable} = require("./data/tables/CartItems.js")
+const productsRoute = require("./routes/productsRoute");
+const cartRoute = require("./routes/cartRoute.js");
 const app = express();
 const port = 3000;
 
@@ -28,6 +31,7 @@ app.use("/api/auth", authRoute);
 
 // protected routes
 app.use("/api/products", authHandler , productsRoute );
+app.use("/api/cart", authHandler , cartRoute );
 
 
 // error handling middleware
@@ -40,5 +44,7 @@ app.listen(port, async() => {
   await createCategoriesTable();
   await createProductCategoriesTable();
   await createProductsView();
+  await createCartTable();
+  await createCartItemsTable();
   console.log(`Auth system listening at http://localhost:${port}`);
 });

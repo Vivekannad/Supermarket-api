@@ -1,5 +1,5 @@
 const pool = require("../src/config/db");
-const { registerUserService , loginUserService } = require("../models/authModel");
+const { registerUserService , loginUserService , getAllUsersService } = require("../models/authModel");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../utils/token");
 
@@ -7,8 +7,8 @@ const registerUser = async(req,res , next) => {
     const {username , email , password , role} = req.body;
     try{
         const hashedPassword = await bcrypt.hash(password , 10);
-        await registerUserService({username , email , password : hashedPassword , role});
-        res.status(201).json({message : "User registered successfully"});
+        const registeredUser = await registerUserService({username , email , password : hashedPassword , role});
+        res.status(201).json({message : "User registered successfully", username : registeredUser.username});
     }catch(err){
         next(err);
     }
@@ -20,11 +20,15 @@ const loginUser = async(req,res , next) => {
     try{
         const user = await loginUserService(email);
 
+        console.log("USER" , user);
+
         if(!user){
-            return res.status(401).json({message : "Invalid credentials"});
+            return res.status(401).json({message : "Invalid credentials 1"});
         }
 
         const isMatch = await bcrypt.compare(password , user.password);
+
+        console.log(isMatch);
         
         if(!isMatch){
             return res.status(401).json({message : "Invalid credentials"});
@@ -36,6 +40,11 @@ const loginUser = async(req,res , next) => {
     }catch(err){
         next(err);
     }
+}
+
+const getAllUsersHandler =  async(req,res) => {
+    const result = await getAllUsersService();
+    res.status(200).json({message : "Users retrieved successfully", users : result});
 }
 
 const logoutHandler = () => {
@@ -51,5 +60,6 @@ const logoutHandler = () => {
 module.exports = {
     registerUser,
     loginUser,
-    logoutHandler
+    logoutHandler,
+    getAllUsersHandler
 }

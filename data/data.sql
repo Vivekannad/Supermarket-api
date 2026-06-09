@@ -34,6 +34,22 @@ CREATE TABLE IF NOT EXISTS product_categories (
     PRIMARY KEY (category_id , product_id)
 )
 
+CREATE TABLE IF NOT EXISTS cart (
+    id SERIAL PRIMARY KEY,
+    user_id integer not null ,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+
+CREATE TABLE IF NOT EXISTS cart_items (
+    id SERIAL PRIMARY KEY , 
+    cart_id integer not null ,
+    product_id integer not null ,
+    quantity integer not null check (quantity > 0) default 1 ,
+    FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+)
+
 CREATE TABLE IF NOT EXISTS address (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,

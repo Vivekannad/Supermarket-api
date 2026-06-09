@@ -5,9 +5,10 @@ const { getAllProductsService, getAllCategoriesService, getProductByIdService, a
 
 const getAllProductsHandler = async(req,res, next) => {
     try {
-        const { minprice = 0, maxprice = Infinity, page = 1, limit = 10 } = req.query;
+        let { minprice = 0, maxprice = Infinity, page = 1, limit = 10 } = req.query;
+        limit = Math.min(limit , 10); // limit the number of produts per page to max 10;
         const products = await getAllProductsService( minprice, maxprice, limit, page );
-        res.status(200).json(products);
+        res.status(200).json({message : "Successfully fetched all products" , products : products} );
     } catch (error) {
         next(error);
     }
