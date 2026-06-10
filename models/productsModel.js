@@ -17,8 +17,15 @@ const getAllCategoriesService = async () => {
     return result.rows;
 }
 
-const getProductsByCategoryService = async (category) => {
-    const result = await pool.query("SELECT * FROM products_view where category_name like '%' || $1 || '%'", [category]);
+const getProductsByCategoryIdService = async (categoryId) => {
+
+    const query = `
+        SELECT * FROM products_view
+        WHERE product_id = ANY (
+            SELECT product_id FROM product_categories WHERE category_id = $1
+        )
+    `;
+    const result = await pool.query(query , [categoryId]);
     return result.rows;
 }
 
@@ -165,7 +172,7 @@ module.exports = {
     getAllProductsService,
     getProductByIdService,
     getAllCategoriesService,
-    getProductsByCategoryService,
+    getProductsByCategoryIdService,
     addProductService,
     addCategoryService,
     editProductService,

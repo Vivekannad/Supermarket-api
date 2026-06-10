@@ -2,8 +2,6 @@ const pool = require('../../src/config/db.js');
 
 const createUserTable = async () => {
     const query = `
-    
-    CREATE TYPE user_role AS ENUM ('user', 'admin');
 
     CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,

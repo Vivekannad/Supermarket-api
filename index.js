@@ -13,6 +13,7 @@ const {createCartItemsTable} = require("./data/tables/CartItems.js")
 const productsRoute = require("./routes/productsRoute");
 const cartRoute = require("./routes/cartRoute.js");
 const { cartView } = require('./data/sql_views/cartView.js');
+const { createTypes } = require('./data/tables/types.js');
 const app = express();
 const port = 3000;
 
@@ -40,6 +41,7 @@ app.use(errorHandler);
 
 
 app.listen(port, async() => {
+  await createTypes();
   await createUserTable();
   await createProductsTable(); 
   await createCategoriesTable();

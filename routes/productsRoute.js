@@ -6,7 +6,7 @@ const router = require("express").Router();
 // ===================== static routes first =====================
 
 router.get("/categories", getAllCategoriesHandler);
-router.get("/category/:category", searchProductsByCategoryHandler);
+router.get("/category/:categoryId", searchProductsByCategoryHandler);
 router.get("/", getAllProductsHandler);
 
 // admin static routes — must be above /:id

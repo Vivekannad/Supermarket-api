@@ -2,8 +2,7 @@ const pool = require('../../src/config/db.js');
 
 const createPaymentTable = async () => {
     const query = `
-    CREATE TYPE payment_method AS ENUM ('COD', 'CARD');
-    CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
+   
     
     CREATE TABLE IF NOT EXISTS payment (
     id SERIAL PRIMARY KEY ,

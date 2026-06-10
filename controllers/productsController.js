@@ -1,4 +1,4 @@
-const { getAllProductsService, getAllCategoriesService, getProductByIdService, addProductService, addCategoryService, getProductsByCategoryService, removeProductService, editProductService } = require("../models/productsModel");
+const { getAllProductsService, getProductsByCategoryIdService, getProductByIdService, addProductService, addCategoryService, getProductsByCategoryService, removeProductService, editProductService } = require("../models/productsModel");
 
 
 //======================= user products controllers ====================
@@ -26,8 +26,8 @@ const getAllCategoriesHandler = async(req,res,next) => {
 
 const searchProductsByCategoryHandler = async(req,res,next) => {
     try {
-        const {category} = req.params;
-        const products = await getProductsByCategoryService(category);
+        const categoryId = Number(req.params.categoryId);
+        const products = await getProductsByCategoryIdService(categoryId);
         res.status(200).json(products);
     } catch (error) {
         next(error);
@@ -37,7 +37,7 @@ const searchProductsByCategoryHandler = async(req,res,next) => {
 
 const getProductByIdHandler = async(req,res,next) => {
     try {
-        const {id} = req.params;
+        const id = Number(req.params.id);
         const product = await getProductByIdService(id);
         res.status(200).json(product);
     } catch (error) {
