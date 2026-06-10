@@ -12,6 +12,7 @@ const {createCartTable} = require("./data/tables/Cart.js")
 const {createCartItemsTable} = require("./data/tables/CartItems.js")
 const productsRoute = require("./routes/productsRoute");
 const cartRoute = require("./routes/cartRoute.js");
+const { cartView } = require('./data/sql_views/cartView.js');
 const app = express();
 const port = 3000;
 
@@ -46,5 +47,6 @@ app.listen(port, async() => {
   await createProductsView();
   await createCartTable();
   await createCartItemsTable();
+  await cartView();
   console.log(`Auth system listening at http://localhost:${port}`);
 });

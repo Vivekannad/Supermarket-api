@@ -1,6 +1,6 @@
 const { findCartIdByUserIdService, addCartItemsService, removeFromCartService, viewCartService } = require("../models/cartModel");
 
-const addToCartHandler = async(req,res) => {
+const addToCartHandler = async(req,res , next) => {
     try {
         const {productId , quantity} = req.body;
         const cartId = await findCartIdByUserIdService(req.user.id);
@@ -10,32 +10,32 @@ const addToCartHandler = async(req,res) => {
         res.status(200).json({message : "Product added to cart successfully", cartItem })
 
     }catch(err) {
-        res.status(500).json({message : "Server side error"});
+        next(err);
     }
 
 }
 
-const removeFromCartHandler = async(req,res) => {
+const removeFromCartHandler = async(req,res, next) => {
     try {
-        const {cartItemsId} = req.params;
+        let {cartItemsId} = req.params;
         cartItemsId = parseInt(cartItemsId);
-        const removedItem = await removeFromCartService(cartItemsId);
+
+        const removedItem = await removeFromCartService(cartItemsId , req.user.id );
         if(!removedItem) {
             return res.status(404).json({message : "Cart item not found"});
         }
         res.status(200).json({message : "Product removed from cart successfully", removedItem })
     }catch(err) {
-        res.status(500).json({message : "Server side error"});
+       next(err);
     }
 }
 
-const viewCartHandler = async(req,res) => {
+const viewCartHandler = async(req,res, next) => {
     try {
-        const cartId = await findCartIdByUserIdService(req.user.id);
-        const cartItems = await viewCartService(cartId);
+        const cartItems = await viewCartService(req.user.id);
         res.status(200).json({message : "Cart items retrieved successfully", cartItems });
     } catch(err) {
-        res.status(500).json({message : "Server side error"});
+        next(err);
     }
 }
 

@@ -18,7 +18,7 @@ const authHandler = (req, res, next) => {
         req.user = user;
         next();
     } catch (err) {
-        return res.status(500).json({ message: "Server side error" })
+        return res.status(500).json({ message: "Server side error" + err.message })
     }
 
 }

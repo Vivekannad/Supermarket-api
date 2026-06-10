@@ -11,7 +11,8 @@ const createCartItemsTable = async () => {
             product_id integer not null ,
             quantity integer not null check (quantity > 0) default 1 ,
             FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
-            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+            UNIQUE(cart_id, product_id)
         )
         `;
         await pool.query(query);
