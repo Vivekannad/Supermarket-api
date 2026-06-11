@@ -14,6 +14,7 @@ const productsRoute = require("./routes/productsRoute");
 const cartRoute = require("./routes/cartRoute.js");
 const { cartView } = require('./data/sql_views/cartView.js');
 const { createTypes } = require('./data/tables/types.js');
+const orderRoute = require("./routes/ordersRoute.js")
 const app = express();
 const port = 3000;
 
@@ -34,6 +35,7 @@ app.use("/api/auth", authRoute);
 // protected routes
 app.use("/api/products", authHandler , productsRoute );
 app.use("/api/cart", authHandler , cartRoute );
+app.use("/api/orders", authHandler , orderRoute );
 
 
 // error handling middleware
