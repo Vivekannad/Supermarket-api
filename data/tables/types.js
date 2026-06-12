@@ -19,7 +19,7 @@ const createTypes = async () => {
     END $$;
 
     DO $$ BEGIN
-    CREATE TYPE order_status AS ENUM ('pending' ,  'processing' , 'shipped' , 'cancelled');
+    CREATE TYPE order_status AS ENUM ('pending' ,  'confirmed' , 'shipped' , 'delivered' , 'cancelled');
     Exception when duplicate_object then null;
     END $$;
 

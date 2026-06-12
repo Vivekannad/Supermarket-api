@@ -1,4 +1,4 @@
-const { getAllProductsService, getProductsByCategoryIdService, getProductByIdService, addProductService, addCategoryService, getProductsByCategoryService, removeProductService, editProductService } = require("../models/productsModel");
+const { getAllProductsService, getProductsByCategoryIdService, getProductByIdService, addProductService, addCategoryService, getProductsByCategoryService, removeProductService, editProductService, getAllCategoriesService } = require("../models/productsModel");
 
 
 //======================= user products controllers ====================

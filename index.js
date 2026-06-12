@@ -14,7 +14,12 @@ const productsRoute = require("./routes/productsRoute");
 const cartRoute = require("./routes/cartRoute.js");
 const { cartView } = require('./data/sql_views/cartView.js');
 const { createTypes } = require('./data/tables/types.js');
-const orderRoute = require("./routes/ordersRoute.js")
+const orderRoute = require("./routes/orderRoute.js")
+const addressRoute = require("./routes/addressRoute.js");
+const { createAddressTable } = require('./data/tables/Address.js');
+const { createOrdersTable } = require('./data/tables/Orders.js');
+const { createOrderItemsTable } = require('./data/tables/order_items.js');
+const { createPaymentTable } = require('./data/tables/payment.js');
 const app = express();
 const port = 3000;
 
@@ -36,6 +41,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/products", authHandler , productsRoute );
 app.use("/api/cart", authHandler , cartRoute );
 app.use("/api/orders", authHandler , orderRoute );
+app.use("/api/me",authHandler , addressRoute );
 
 
 // error handling middleware
@@ -52,5 +58,9 @@ app.listen(port, async() => {
   await createCartTable();
   await createCartItemsTable();
   await cartView();
+  await createAddressTable();
+  await createOrdersTable();
+  await createOrderItemsTable();
+  await createPaymentTable();
   console.log(`Auth system listening at http://localhost:${port}`);
 });
