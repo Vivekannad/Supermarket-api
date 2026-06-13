@@ -119,9 +119,70 @@ const getOrderByIdAdminService = async(orderId) => {
     return result.rows[0];
 }
 
-const updateOrderStatusService = async(orderId , status) => {
-    const result = await pool.query("UPDATE orders SET status = $1 WHERE id = $2 RETURNING *", [status , orderId]);
-    return result.rows[0];
+const updateOrderStatusService = async(orderId , status , userId = null) => {
+
+    // first check if the status given is a valid status
+    // second check if status given is cancelled then check order status is pending , if not throw error
+    // if order status is pending , cancel the order and restock the stock
+    // if status is delievered , then update the order and also update the payment satus to paid
+
+    const validStatus = ["pending" , "confirmed" , "shipped" , "delivered" , "cancelled"];
+    if(!validStatus.includes(status)){
+        throw new Error("Invalid status");
+    }
+
+    const query = userId ? "SELECT * FROM orders where id = $1 and user_id = $2" : "SELECT * FROM orders where id = $1";
+    const params = userId ? [orderId,userId] : [orderId];
+    const orders = await pool.query(query, params);
+    const order = orders.rows[0];
+    if(!order){
+        throw new Error("Order not found");
+    }
+    
+
+    await pool.query("BEGIN");
+
+    try {
+        if(status === 'cancelled'){
+            //if user cancels the order, first check if the order is not confirmed , is still in pending status.
+           if(order.status !== "pending"){
+                await pool.query("ROLLBACK");
+                throw new Error("Order is not in pending status");
+           }
+
+           await pool.query("UPDATE orders set status = $1 where id = $2" , [status , orderId]);
+           
+           // restocking the stock
+
+           const orderItems = await pool.query("SELECT * FROM order_items where order_id = $1", [orderId]);
+
+           for (const item of orderItems.rows){
+               await pool.query("UPDATE products SET stock = stock + $1 WHERE id = $2", [item.quantity , item.product_id]);
+           }
+
+        }
+
+        if(order.status === 'cancelled'){
+            await pool.query("ROLLBACK");
+            throw new Error("Order is already cancelled");
+        }
+        // updating the status of the order
+        const updatedResult =await pool.query("UPDATE orders SET status = $1 WHERE id = $2", [status , orderId]);
+        
+        if(status === "delivered"){
+
+            // updating the payment status
+            await pool.query("UPDATE payment SET status = $1 , paid_at = CURRENT_TIMESTAMP WHERE order_id = $2", ["paid" , orderId]);
+        }
+
+        await pool.query("COMMIT");
+
+        return updatedResult.rows[0];
+
+    }catch(err){
+        await pool.query("ROLLBACK");
+        throw err;
+    }
 }
 
 module.exports = {

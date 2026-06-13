@@ -47,6 +47,19 @@ const getOrderByIdHandler = async(req,res,next) => {
     }
 }
 
+const orderCancellationHandler = async(req,res,next) => {
+    try {
+
+        const orderId = parseInt(req.params.orderid);
+        const userId = parseInt(req.user.id);
+        const order = await updateOrderStatusService(orderId , "cancelled" , userId);
+        res.status(200).json({message : "Order cancelled successfully" , order});
+
+    }catch(err){
+        next(err);
+    }
+}
+
 
 // ------------------Admin Order Handlers ----------------
 
@@ -73,7 +86,6 @@ const getOrderByIdAdminHandler = async(req,res,next) => {
 
 const updateOrderStatusHandler = async(req,res,next) => {
     try{
-
         const orderId = parseInt(req.params.orderid);
         const status = req.body.status;
 
@@ -93,5 +105,6 @@ module.exports = {
     getOrderByIdHandler,
     updateOrderStatusHandler,
     getAllOrdersHandler,
-    getOrderByIdAdminHandler
+    getOrderByIdAdminHandler,
+    orderCancellationHandler
 }

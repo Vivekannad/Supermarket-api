@@ -1,4 +1,4 @@
-const { createUserOrderHandler, getUserOrdersHandler, getOrderByIdHandler, updateOrderStatusHandler, getAllOrdersHandler, getOrderByIdAdminHandler } = require('../controllers/ordersController');
+const { createUserOrderHandler, getUserOrdersHandler, getOrderByIdHandler, updateOrderStatusHandler, getAllOrdersHandler, getOrderByIdAdminHandler, orderCancellationHandler } = require('../controllers/ordersController');
 const { restrictTo } = require('../middlewares/authHandler');
 
 const router = require('express').Router();
@@ -11,6 +11,8 @@ router.post("/" , restrictTo(["user"]) , createUserOrderHandler );
 router.get("/getorders" , restrictTo(["user"]) ,  getUserOrdersHandler );
 
 router.get("/getorder/:orderid" , restrictTo(["user"]) , getOrderByIdHandler );
+
+router.put("/cancel/:orderid" , restrictTo(["user"]) , orderCancellationHandler );
 
 
 // ----------------ADMIN ROUTES--------------
