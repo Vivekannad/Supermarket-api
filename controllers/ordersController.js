@@ -1,7 +1,7 @@
 
 // ------------------User Order Handlers ----------------
 
-const { getOrderByIdAdminService, getAllOrdersService, getOrderByIdService, getUserOrdersService, createUserOrderService, updateOrderStatusService } = require("../models/orderModel");
+const { getOrderByIdAdminService, getAllOrdersService, getOrderByIdService,  createUserOrderService, updateOrderStatusService } = require("../models/orderModel");
 
 const createUserOrderHandler = async(req,res , next) => {
     const cartItemsIds = req.body.cartItemIds;
@@ -24,16 +24,7 @@ const createUserOrderHandler = async(req,res , next) => {
     }
 }
 
-const getUserOrdersHandler = async(req,res,next) => {
-    try{
-        const userId = parseInt(req.user.id);
-        const orders = await getUserOrdersService(userId);
-        res.status(200).json({message : "Orders fetched successfully" , orders});
 
-    }catch(err){
-        next(err);
-    }
-}
 
 const getOrderByIdHandler = async(req,res,next) => {
     try {
@@ -101,7 +92,6 @@ const updateOrderStatusHandler = async(req,res,next) => {
 
 module.exports = {
     createUserOrderHandler,
-    getUserOrdersHandler,
     getOrderByIdHandler,
     updateOrderStatusHandler,
     getAllOrdersHandler,

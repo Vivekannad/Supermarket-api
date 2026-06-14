@@ -8,8 +8,6 @@ const router = require('express').Router();
 
 router.post("/" , restrictTo(["user"]) , createUserOrderHandler );
 
-router.get("/getorders" , restrictTo(["user"]) ,  getUserOrdersHandler );
-
 router.get("/getorder/:orderid" , restrictTo(["user"]) , getOrderByIdHandler );
 
 router.put("/cancel/:orderid" , restrictTo(["user"]) , orderCancellationHandler );

@@ -99,10 +99,6 @@ const createUserOrderService = async(user_id , cartItemsId , addressData) => {
 }
 
 
-const getUserOrdersService = async(userId) => {
-    const result = await pool.query("SELECT * FROM orders WHERE user_id = $1", [userId]);
-    return result.rows;
-}
 
 const getOrderByIdService = async(orderId,userId) => {
     const result = await pool.query("SELECT * FROM orders WHERE id = $1 and user_id = $2", [orderId,userId]);
@@ -187,7 +183,6 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
 
 module.exports = {
     createUserOrderService,
-    getUserOrdersService,
     getOrderByIdService,
     getAllOrdersService,
     getOrderByIdAdminService,
