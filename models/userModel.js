@@ -41,7 +41,7 @@ const updateAddressService = async(userId , address = {}) => {
 }
 
 const getUserOrdersService = async(userId) => {
-    const result = await pool.query(`SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC` , [userId]);
+    const result = await pool.query(`SELECT * FROM orders_view WHERE user_id = $1 ` , [userId]);
     return result.rows;
 }
 

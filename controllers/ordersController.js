@@ -14,7 +14,6 @@ const createUserOrderHandler = async(req,res , next) => {
     //}
     const addressData = req.body.address; // optional address data
     try  {
-        console.log("cart item ids " , cartItemsIds);
         const order = await createUserOrderService(user_id, cartItemsIds, addressData);
 
         res.status(201).json({message : "Order created successfully" , order});

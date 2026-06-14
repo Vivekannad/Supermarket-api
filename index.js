@@ -20,6 +20,7 @@ const { createAddressTable } = require('./data/tables/Address.js');
 const { createOrdersTable } = require('./data/tables/Orders.js');
 const { createOrderItemsTable } = require('./data/tables/order_items.js');
 const { createPaymentTable } = require('./data/tables/payment.js');
+const { createOrderView } = require('./data/sql_views/orderView.js');
 const app = express();
 const port = 3000;
 
@@ -61,6 +62,7 @@ app.listen(port, async() => {
   await createAddressTable();
   await createOrdersTable();
   await createOrderItemsTable();
+  await createOrderView();
   await createPaymentTable();
   console.log(`Auth system listening at http://localhost:${port}`);
 });

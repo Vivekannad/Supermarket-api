@@ -90,7 +90,9 @@ const createUserOrderService = async(user_id , cartItemsId , addressData) => {
 
     await pool.query("COMMIT");
 
-    return orderResult.rows[0];
+    const order = await pool.query("SELECT * FROM orders_view where order_id = $1", [orderResult.rows[0].id]);
+
+    return order.rows[0];
     }
     catch(err){
         await pool.query("ROLLBACK");
@@ -101,17 +103,17 @@ const createUserOrderService = async(user_id , cartItemsId , addressData) => {
 
 
 const getOrderByIdService = async(orderId,userId) => {
-    const result = await pool.query("SELECT * FROM orders WHERE id = $1 and user_id = $2", [orderId,userId]);
+    const result = await pool.query("SELECT * FROM orders_view WHERE order_id = $1 and user_id = $2", [orderId,userId]);
     return result.rows[0];
 }
 
 const getAllOrdersService = async() => {
-    const result = await pool.query("SELECT * FROM orders");
+    const result = await pool.query("SELECT * FROM orders_view");
     return result.rows;
 }
 
 const getOrderByIdAdminService = async(orderId) => {
-    const result = await pool.query("SELECT * FROM orders WHERE id = $1", [orderId]);
+    const result = await pool.query("SELECT * FROM _view WHERE order_id = $1", [orderId]);
     return result.rows[0];
 }
 
