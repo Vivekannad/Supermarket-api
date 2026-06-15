@@ -12,7 +12,9 @@ const registerUserService = async(userData) => {
         const user = await pool.query("SELECT * FROM users where email = $1" , [email]);
         if (user.rows.length > 0) {
             await pool.query("Rollback");
-            return null;
+            const err = new Error("User already exists");
+            err.statusCode = 400;
+            throw err;
         }
 
         const query = "INSERT INTO users (username , email , password , role) VALUES  ($1 , $2 , $3 , $4) RETURNING * ";

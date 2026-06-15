@@ -3,7 +3,7 @@ const { registerUserService , loginUserService , getAllUsersService } = require(
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../utils/token");
 
-const registerUser = async(req,res , next) => {
+const registerUserHandler = async(req,res , next) => {
     const {username , email , password , role} = req.body;
     try{
         const hashedPassword = await bcrypt.hash(password , 10);
@@ -11,13 +11,13 @@ const registerUser = async(req,res , next) => {
         if(!registeredUser){
             return res.status(400).json({message : "User already exists"});
         }
-        res.status(201).json({message : "User registered successfully", username : registeredUser.username});
+        res.status(201).json({message : "User registered successfully", user : { username : registeredUser.username} , email : registeredUser.email , role : registeredUser.role});
     }catch(err){
         next(err);
     }
 }
 
-const loginUser = async(req,res , next) => {
+const loginUserHandler = async(req,res , next) => {
     const {email , password} = req.body;
 
     try{
@@ -36,7 +36,7 @@ const loginUser = async(req,res , next) => {
 
         const token = generateToken(user);
 
-        res.status(200).json({message : "User logged in successfully", username : user.username, email : user.email, role : user.role, token});
+        res.status(200).json({message : "User logged in successfully", user: { username : user.username, email : user.email, role : user.role, token}});
     }catch(err){
         next(err);
     }
@@ -54,6 +54,6 @@ const logoutHandler = () => {
 
 
 module.exports = {
-    registerUser,
-    loginUser,
+    registerUserHandler,
+    loginUserHandler,
     logoutHandler}

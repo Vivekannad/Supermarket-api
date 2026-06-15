@@ -8,7 +8,7 @@ const getAllProductsHandler = async(req,res, next) => {
         let { minprice = 0, maxprice = Infinity, page = 1, limit = 10 } = req.query;
         limit = Math.min(limit , 10); // limit the number of produts per page to max 10;
         const products = await getAllProductsService( minprice, maxprice, limit, page );
-        res.status(200).json({message : "Successfully fetched all products" , products : products} );
+        res.status(200).json({message : "Product fetched successfully" , products : products} );
     } catch (error) {
         next(error);
     }
@@ -18,7 +18,10 @@ const getAllProductsHandler = async(req,res, next) => {
 const getAllCategoriesHandler = async(req,res,next) => {
     try {
         const categories = await getAllCategoriesService();
-        res.status(200).json(categories);
+        if(!categories) {
+            return res.status(404).json({message : "Categories not found"});
+        }
+        res.status(200).json({message : "Categories fetched successfully" , categories});
     } catch (error) {
         next(error);
     }
@@ -28,7 +31,10 @@ const searchProductsByCategoryHandler = async(req,res,next) => {
     try {
         const categoryId = Number(req.params.categoryId);
         const products = await getProductsByCategoryIdService(categoryId);
-        res.status(200).json(products);
+        if(!products) {
+            return res.status(404).json({message : "Products not found"});
+        }
+        res.status(200).json({message : "Product fetched successfully" ,products});
     } catch (error) {
         next(error);
     }
@@ -39,7 +45,10 @@ const getProductByIdHandler = async(req,res,next) => {
     try {
         const id = Number(req.params.id);
         const product = await getProductByIdService(id);
-        res.status(200).json(product);
+        if(!product){
+            return res.status(404).json({message : "Product not found"});
+        }
+        res.status(200).json({product});
     } catch (error) {
         next(error);
     }
@@ -78,6 +87,9 @@ const editProductHandler = async (req, res, next) => {
     try {
 
         const product = await editProductService({id , name , description , price , stock , categoryIds});
+        if(!product) {
+            return res.status(404).json({message : "Product not found"});
+        }
         res.status(200).json({message : "Product edited successfully" , product});
 
     }catch(err){
@@ -92,6 +104,9 @@ const removeProductHandler = async (req, res , next) => {
     try{
 
         const product = await removeProductService(id);
+        if(!product){
+            return res.status(404).json({message : "Product not found"});
+        }
         res.status(200).json({message : "Product removed successfully" , product});
 
     }catch(err){

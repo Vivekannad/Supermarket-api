@@ -6,8 +6,10 @@ const createUserOrderService = async(user_id , cartItemsId , addressData) => {
     const cartedItems = await pool.query("Select * from cart_view where user_id = $1 and cart_item_id = ANY($2)" , [user_id , cartItemsId]);
 
 
-    if(cartedItems.rows.length != cartItemsId.length){
-        throw new Error("Invalid cart items");
+    if(cartedItems.rows.length === 0 || cartedItems.rows.length != cartItemsId.length){
+        const err = new Error("Invalid cart items");
+        err.statusCode = 400;
+        throw err;
     }
 
     // check stock 
@@ -16,7 +18,9 @@ const createUserOrderService = async(user_id , cartItemsId , addressData) => {
         const {rows} = await pool.query("SELECT stock from products where id = $1" , [item.product_id]);
 
         if(rows[0].stock < item.quantity){
-            throw new Error("Insufficient stock");
+            const err = new Error("Insufficient stock");
+            err.statusCode = 400;
+            throw err;
         }
     }
 
@@ -128,7 +132,9 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
     const orders = await pool.query(query, params);
     const order = orders.rows[0];
     if(!order){
-        throw new Error("Order not found");
+        const err = new Error("Order not found");
+        err.statusCode = 404;
+        throw err;
     }
     
 
@@ -139,7 +145,9 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
             //if user cancels the order, first check if the order is not confirmed , is still in pending status.
            if(order.status != "pending"){
                 await pool.query("ROLLBACK");
-                throw new Error("Order is not in pending status");
+                const err = new Error("Order is not in pending status");
+                err.statusCode = 400;
+                throw err;
            }
 
            const updatedResult = await pool.query("UPDATE orders set status = $1 where id = $2 RETURNING *" , [status , orderId]);
@@ -156,7 +164,9 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
 
         if(order.status === 'cancelled'){
             await pool.query("ROLLBACK");
-            throw new Error("Order is already cancelled");
+            const err = new Error("Order is already cancelled");
+            err.statusCode = 400;
+            throw err;
         }
         // updating the status of the order
         const updatedResult =await pool.query("UPDATE orders SET status = $1 WHERE id = $2 RETURNING *", [status , orderId]);

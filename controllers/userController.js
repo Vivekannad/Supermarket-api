@@ -32,7 +32,7 @@ const updateUserInfoHandler = async(req,res,next) =>  {
         const {username , email} = req.body;
 
         const info = await updateUserInfoService(userId, {username , email});
-        res.status(200).json({message : "User info updated successfully", username : info.username , email : info.email});
+        res.status(200).json({message : "User info updated successfully", user : { username : info.username , email : info.email}});
 
     }catch(err){
         next(err);
@@ -47,7 +47,7 @@ const updateUserPasswordHandler = async(req,res,next) => {
         const {oldPass , newPass} = req.body;
 
         const info = await updateUserPasswordService(userId , oldPass , newPass);
-        res.status(200).json({message : "User password updated successfully",username : info.username , email : info.email });
+        res.status(200).json({message : "User password updated successfully", user : {username : info.username , email : info.email} });
 
     }catch(err){
         next(err);
@@ -62,6 +62,8 @@ const updateUserAddressHandler = async(req,res,next) => {
         const address = req.body.address;
 
         const info = await updateUserAddressService(userId , address);
+
+        if(!info) return res.status(401).json({message : "No Address at first place."});
         res.status(200).json({message : "User address updated successfully", info});
 
     }catch(err){

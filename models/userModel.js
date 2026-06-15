@@ -18,19 +18,18 @@ const updateUserInfoService = async(userId , userInfo = {}) => {
 }
 
 const updateUserPasswordService = async(userId , oldPass , newPass) => {
-    try {
 
         const userInfo = await getUserInfoService(userId);
         const isMatch = await bcrypt.compare(oldPass , userInfo.password);
-        if(!isMatch) throw new Error("Invalid password");
+        if(!isMatch){
+            const err = new Error("Invalid credentials");
+            err.statusCode = 401;
+            throw err;
+        } ;
         const hashedPass = await bcrypt.hash(newPass , 10);
         const result = await pool.query("UPDATE users SET password = $1 where id = $2 RETURNING *" , [hashedPass , userId]);
         return result.rows[0];
-        
-
-    }catch(err){
-        throw err;
-    }
+    
 }
 
 const updateUserAddressService = async(userId , address = {}) => {

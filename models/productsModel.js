@@ -46,7 +46,9 @@ const addProductService = async (product) => {
     
         // if even one category is not present in the categories table fro the given category_ids from admin then we will give error to the admin to add the category first and then add the product
         if(foundedCategories.rows.length != categoryIds.length){
-            throw new Error("One or more categories are not present in the categories table. Please add the category first and then add the product.");
+            const err = new Error("One or more categories are not present in the categories table. Please add the category first and then add the product.");
+            err.statusCode = 400;
+            throw err;
         }
         
         // now , here categories are already present in the categories table 
@@ -83,7 +85,9 @@ const addCategoryService = async (category = '') => {
     try {
         const { rows: foundedCategory } = await pool.query("SELECT * FROM categories where name = $1", [category]);
         if(foundedCategory.length > 0){
-            throw new Error("Category is already present in the categories table. Please add a new category.");
+            const err = new Error("Category is already present in the categories table. Please add a new category.");
+            err.statusCode = 400;
+            throw err;
         }
         
         // category is not already present in the categories table , so we can insert the new category in the category table
@@ -127,7 +131,9 @@ const editProductService = async (product) => {
            name = COALESCE($1, name), description = COALESCE($2, description) , price =  COALESCE($3, price) , stock = COALESCE($4 , stock) where id = $5 RETURNING *` , [name , description , price , stock , id]);
 
         if(result.rows.length == 0){
-            throw new Error("Product not found");
+            const err = new Error("Product not found");
+            err.statusCode = 404;
+            throw err;
         }
 
         // if there are category_ids to be changed , then delete the product record from product_categories table
@@ -159,7 +165,9 @@ const removeProductService = async (id) => {
     try {
         const result = await pool.query("DELETE FROM products where id = $1 RETURNING *", [id]);
         if(result.rows.length == 0){
-            throw new Error("Product not found");
+            const err = new Error("Product not found");
+            err.statusCode = 404;
+            throw err;
         }
         await pool.query("DELETE FROM product_categories where product_id = $1", [id]);
         return result.rows[0];
