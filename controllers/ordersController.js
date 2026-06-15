@@ -30,6 +30,7 @@ const getOrderByIdHandler = async(req,res,next) => {
         const userId = parseInt(req.user.id);
         const orderId = parseInt(req.params.orderid);
         const order = await getOrderByIdService(orderId , userId);
+        if(!order) throw new Error("Order not found");
         res.status(200).json({message : "Order fetched successfully" , order});
 
     }catch(err){
@@ -43,6 +44,7 @@ const orderCancellationHandler = async(req,res,next) => {
         const orderId = parseInt(req.params.orderid);
         const userId = parseInt(req.user.id);
         const order = await updateOrderStatusService(orderId , "cancelled" , userId);
+        if(!order) throw new Error("Order not found");
         res.status(200).json({message : "Order cancelled successfully" , order});
 
     }catch(err){
