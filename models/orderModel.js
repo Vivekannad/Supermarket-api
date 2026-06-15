@@ -119,15 +119,9 @@ const getOrderByIdAdminService = async(orderId) => {
 
 const updateOrderStatusService = async(orderId , status , userId = null) => {
 
-    // first check if the status given is a valid status
-    // second check if status given is cancelled then check order status is pending , if not throw error
+    //  check if status given is cancelled then check order status is pending , if not throw error
     // if order status is pending , cancel the order and restock the stock
     // if status is delievered , then update the order and also update the payment satus to paid
-
-    const validStatus = ["pending" , "confirmed" , "shipped" , "delivered" , "cancelled"];
-    if(!validStatus.includes(status)){
-        throw new Error("Invalid status");
-    }
 
     const query = userId ? "SELECT * FROM orders where id = $1 and user_id = $2" : "SELECT * FROM orders where id = $1";
     const params = userId ? [orderId,userId] : [orderId];

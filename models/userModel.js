@@ -17,7 +17,7 @@ const updateUserInfoService = async(userId , userInfo = {}) => {
     return result.rows[0];
 }
 
-const updatePasswordService = async(userId , oldPass , newPass) => {
+const updateUserPasswordService = async(userId , oldPass , newPass) => {
     try {
 
         const userInfo = await getUserInfoService(userId);
@@ -33,7 +33,7 @@ const updatePasswordService = async(userId , oldPass , newPass) => {
     }
 }
 
-const updateAddressService = async(userId , address = {}) => {
+const updateUserAddressService = async(userId , address = {}) => {
     const {street , city , state , zip , country} = address;
     const result = await  pool.query("UPDATE address SET street = $1 , city = $2 , state = $3 , zip = $4 , country = $5 where user_id = $6 RETURNING *" , [street , city , state , zip , country , userId]);
     return result.rows[0];
@@ -49,7 +49,7 @@ module.exports = {
     getUserAddressService ,
     getUserInfoService ,
     updateUserInfoService ,
-    updatePasswordService,
-    updateAddressService,
+    updateUserPasswordService,
+    updateUserAddressService,
     getUserOrdersService
 }

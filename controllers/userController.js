@@ -1,4 +1,4 @@
-const { getUserAddressService, updateAddressService, updatePasswordService, updateUserInfoService, getUserInfoService, getUserOrdersService } = require("../models/userModel");
+const { getUserAddressService,  updateUserInfoService, getUserInfoService, getUserOrdersService, updateUserAddressService, updateUserPasswordService } = require("../models/userModel");
 
 const getUserAddressHandler = async(req,res,next) => {
     try{
@@ -40,13 +40,13 @@ const updateUserInfoHandler = async(req,res,next) =>  {
 
 }
 
-const updatePasswordHandler = async(req,res,next) => {
+const updateUserPasswordHandler = async(req,res,next) => {
     try{
         const userId = parseInt(req.user.id);
 
         const {oldPass , newPass} = req.body;
 
-        const info = await updatePasswordService(userId , oldPass , newPass);
+        const info = await updateUserPasswordService(userId , oldPass , newPass);
         res.status(200).json({message : "User password updated successfully",username : info.username , email : info.email });
 
     }catch(err){
@@ -55,13 +55,13 @@ const updatePasswordHandler = async(req,res,next) => {
 
 }
 
-const updateAddressHandler = async(req,res,next) => {
+const updateUserAddressHandler = async(req,res,next) => {
     try{
         const userId = parseInt(req.user.id);
 
         const address = req.body.address;
 
-        const info = await updateAddressService(userId , address);
+        const info = await updateUserAddressService(userId , address);
         res.status(200).json({message : "User address updated successfully", info});
 
     }catch(err){
@@ -86,7 +86,7 @@ module.exports = {
     getUserAddressHandler,
     getUserInfoHandler,
     updateUserInfoHandler,
-    updatePasswordHandler,
-    updateAddressHandler,
+    updateUserPasswordHandler,
+    updateUserAddressHandler,
     getUserOrdersHandler
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const pool = require('./src/config/db');
 const authRoute = require('./routes/authRoute');
 const { errorHandler } = require('./middlewares/errorHandler');
-const { authHandler } = require('./middlewares/authHandler');
+const { authHandler, restrictTo } = require('./middlewares/authHandler');
 const { createUserTable } = require('./data/tables/User');
 const { createProductsView } = require('./data/sql_views/productsViews');
 const { createCategoriesTable } = require('./data/tables/Categories');
@@ -42,7 +42,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/products", authHandler , productsRoute );
 app.use("/api/cart", authHandler , cartRoute );
 app.use("/api/orders", authHandler , orderRoute );
-app.use("/api/me", authHandler , userRoute );
+app.use("/api/me", authHandler , restrictTo(["user"]) , userRoute );
 
 
 // error handling middleware

@@ -1,14 +1,15 @@
 const { registerUser, loginUser , logoutHandler, getAllUsersHandler } = require("../controllers/authControllers");
-const { validateRegister, validateLogin } = require("../middlewares/inputValidator");
+const { validate } = require("../middlewares/validateHandler");
+const { loginSchema, registerSchema } = require("../validators/authValidator");
 
 
 const router = require("express").Router();
 
 
-router.post("/register", validateRegister ,  registerUser);
+router.post("/register", validate(registerSchema) ,  registerUser);
 
 
-router.post("/login", validateLogin , loginUser);
+router.post("/login", validate(loginSchema) , loginUser);
 
 router.get("/logout", logoutHandler);
 
