@@ -1,27 +1,7 @@
 const express = require('express');
-const pool = require('./src/config/db');
-const authRoute = require('./routes/authRoute');
 const { errorHandler } = require('./middlewares/errorHandler');
-const { authHandler, restrictTo } = require('./middlewares/authHandler');
-const { createUserTable } = require('./data/tables/User');
-const { createProductsView } = require('./data/sql_views/productsViews');
-const { createCategoriesTable } = require('./data/tables/Categories');
-const { createProductCategoriesTable } = require('./data/tables/ProductCategories');
-const { createProductsTable } = require('./data/tables/Products');
-const {createCartTable} = require("./data/tables/Cart.js")
-const {createCartItemsTable} = require("./data/tables/CartItems.js")
-const productsRoute = require("./routes/productsRoute");
-const cartRoute = require("./routes/cartRoute.js");
-const { cartView } = require('./data/sql_views/cartView.js');
-const { createTypes } = require('./data/tables/types.js');
-const orderRoute = require("./routes/orderRoute.js")
-const userRoute = require("./routes/userRoute.js");
-const adminRoute = require("./routes/adminRoute.js");
-const { createAddressTable } = require('./data/tables/Address.js');
-const { createOrdersTable } = require('./data/tables/Orders.js');
-const { createOrderItemsTable } = require('./data/tables/order_items.js');
-const { createPaymentTable } = require('./data/tables/payment.js');
-const { createOrderView } = require('./data/sql_views/orderView.js');
+const { initDB } = require('./data/init.js');
+const router = require('./routes/route.js');
 const app = express();
 const port = 3000;
 
@@ -31,42 +11,21 @@ app.use(express.json());
 
 //testing route
 app.get('/', async (req, res) => {
-    const result = await pool.query('SELECT current_database()');
-    res.json(result.rows[0]);
+    res.json({message : "Hello World"});
 });
 
-// auth routes
-app.use("/api/auth", authRoute);
-
-
-// protected routes
-app.use("/api/products", authHandler , productsRoute );
-app.use("/api/cart", authHandler , cartRoute );
-app.use("/api/orders", authHandler , orderRoute );
-app.use("/api/me", authHandler , restrictTo(["user"]) , userRoute );
-app.use("/api/admin", authHandler , restrictTo(["admin"]) , adminRoute );
-
-// app.use("/*", (req, res) => res.status(404).json({ message: "Not found" }));
-
+app.use("/api" , router);
 
 // error handling middleware
 app.use(errorHandler);
 
 
 app.listen(port, async() => {
-  await createTypes();
-  await createUserTable();
-  await createProductsTable(); 
-  await createCategoriesTable();
-  await createProductCategoriesTable();
-  await createProductsView();
-  await createCartTable();
-  await createCartItemsTable();
-  await cartView();
-  await createAddressTable();
-  await createOrdersTable();
-  await createOrderItemsTable();
-  await createOrderView();
-  await createPaymentTable();
+  try {
+    await initDB();
+    
+  }catch(err) {
+    console.error(err);
+  }
   console.log(`Auth system listening at http://localhost:${port}`);
 });
