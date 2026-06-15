@@ -8,6 +8,9 @@ const registerUser = async(req,res , next) => {
     try{
         const hashedPassword = await bcrypt.hash(password , 10);
         const registeredUser = await registerUserService({username , email , password : hashedPassword , role});
+        if(!registeredUser){
+            return res.status(400).json({message : "User already exists"});
+        }
         res.status(201).json({message : "User registered successfully", username : registeredUser.username});
     }catch(err){
         next(err);
@@ -21,7 +24,7 @@ const loginUser = async(req,res , next) => {
         const user = await loginUserService(email);
 
         if(!user){
-            return res.status(401).json({message : "Invalid credentials 1"});
+            return res.status(401).json({message : "Invalid credentials"});
         }
 
         const isMatch = await bcrypt.compare(password , user.password);
@@ -39,10 +42,6 @@ const loginUser = async(req,res , next) => {
     }
 }
 
-const getAllUsersHandler =  async(req,res) => {
-    const result = await getAllUsersService();
-    res.status(200).json({message : "Users retrieved successfully", users : result});
-}
 
 const logoutHandler = () => {
         // Since JWT is stateless, we cannot invalidate the token on the server side.
@@ -57,6 +56,4 @@ const logoutHandler = () => {
 module.exports = {
     registerUser,
     loginUser,
-    logoutHandler,
-    getAllUsersHandler
-}
+    logoutHandler}

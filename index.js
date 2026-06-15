@@ -16,6 +16,7 @@ const { cartView } = require('./data/sql_views/cartView.js');
 const { createTypes } = require('./data/tables/types.js');
 const orderRoute = require("./routes/orderRoute.js")
 const userRoute = require("./routes/userRoute.js");
+const adminRoute = require("./routes/adminRoute.js");
 const { createAddressTable } = require('./data/tables/Address.js');
 const { createOrdersTable } = require('./data/tables/Orders.js');
 const { createOrderItemsTable } = require('./data/tables/order_items.js');
@@ -43,6 +44,7 @@ app.use("/api/products", authHandler , productsRoute );
 app.use("/api/cart", authHandler , cartRoute );
 app.use("/api/orders", authHandler , orderRoute );
 app.use("/api/me", authHandler , restrictTo(["user"]) , userRoute );
+app.use("/api/admin", authHandler , restrictTo(["admin"]) , adminRoute );
 
 
 // error handling middleware

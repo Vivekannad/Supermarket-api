@@ -6,6 +6,15 @@ const registerUserService = async(userData) => {
     // every user has his own  cart created when he registers
     await pool.query("Begin");
     try {
+
+        // checking if the user already exists
+
+        const user = await pool.query("SELECT * FROM users where email = $1" , [email]);
+        if (user.rows.length > 0) {
+            await pool.query("Rollback");
+            return null;
+        }
+
         const query = "INSERT INTO users (username , email , password , role) VALUES  ($1 , $2 , $3 , $4) RETURNING * ";
         const values = [username , email , password , role];
         const result = await pool.query(query, values);
@@ -31,14 +40,8 @@ const loginUserService = async(email) => {
     return result.rows[0];
 }
 
-const getAllUsersService = async() => {
-    const query = "SELECT id , username , email , role FROM users";
-    const result = await pool.query(query);
-    return result.rows;
-}
 
 module.exports = {
     registerUserService,
-    loginUserService,
-    getAllUsersService
+    loginUserService
 }
