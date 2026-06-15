@@ -43,17 +43,7 @@ const loginUserHandler = async(req,res , next) => {
 }
 
 
-const logoutHandler = () => {
-        // Since JWT is stateless, we cannot invalidate the token on the server side.
-        // To "logout" a user, the client should simply delete the token from its storage (e.g., localStorage or cookies).
-        // Optionally, you can implement token blacklisting on the server side to invalidate tokens before their expiration time.
-        // I want to blacklist the token on logout and it can be before expiry
-         
-
-}
-
-
 module.exports = {
     registerUserHandler,
-    loginUserHandler,
-    logoutHandler}
+    loginUserHandler
+    }

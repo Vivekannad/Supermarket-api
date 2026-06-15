@@ -1,4 +1,4 @@
-const {  logoutHandler, registerUserHandler, loginUserHandler } = require("../controllers/authControllers");
+const { registerUserHandler, loginUserHandler } = require("../controllers/authControllers");
 const { validate } = require("../middlewares/validateHandler");
 const { loginSchema, registerSchema } = require("../validators/authValidator");
 
@@ -11,7 +11,6 @@ router.post("/register", validate(registerSchema) ,  registerUserHandler);
 
 router.post("/login", validate(loginSchema) , loginUserHandler);
 
-router.get("/logout", logoutHandler);
 
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { getUserService, getAllUsersService } = require("../models/adminModel");
+const { getUserService, getAllUsersService, getAdminStatsService } = require("../models/adminModel");
 
 const getAllUsersHandler =  async(req,res,next) => {
     try {
@@ -20,8 +20,17 @@ const getUserHandler = async(req,res,next) => {
     }
 }
 
+const getAdminStatsHandler = async(req,res,next) => {
+    try {
 
+        const adminStats = await getAdminStatsService();
+        res.status(200).json({message : "admin stats retrieved successfully" , adminStats})
+    }catch(err){
+        next(err);
+    }
+}
 module.exports ={
     getAllUsersHandler,
-    getUserHandler
+    getUserHandler,
+    getAdminStatsHandler
 }

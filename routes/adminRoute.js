@@ -1,4 +1,4 @@
-const { getAllUsersHandler, getUserHandler } = require("../controllers/adminController");
+const { getAllUsersHandler, getUserHandler, getAdminStatsHandler } = require("../controllers/adminController");
 
 const router = require("express").Router();
 
@@ -7,7 +7,7 @@ router.get("/users", getAllUsersHandler);
 
 router.get("/user/:id" , getUserHandler);
 
-// router.get("/stats" , getStatsHandler);
+router.get("/stats" , getAdminStatsHandler);
 
 
 module.exports = router;

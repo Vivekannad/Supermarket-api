@@ -46,6 +46,8 @@ app.use("/api/orders", authHandler , orderRoute );
 app.use("/api/me", authHandler , restrictTo(["user"]) , userRoute );
 app.use("/api/admin", authHandler , restrictTo(["admin"]) , adminRoute );
 
+// app.use("/*", (req, res) => res.status(404).json({ message: "Not found" }));
+
 
 // error handling middleware
 app.use(errorHandler);
