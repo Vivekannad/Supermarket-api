@@ -49,11 +49,10 @@ const getProductByIdHandler = async(req,res,next) => {
 // ======================= admin products controllers ====================
 
 const addProductHandler = async (req, res , next) => {
-    let {name='' , description= '', price = 0.00 , stock = 0, category_ids=[]} = req.body;
+    const {name='' , description= '', price = 0.00 , stock = 0, categoryIds=[]} = req.body;
     try {
-        name = name.toLowerCase();
         // add product 
-        const product = await addProductService({name , description , price , stock , category_ids});
+        const product = await addProductService({name , description , price , stock , categoryIds});
         res.status(201).json({message : "Product added successfully" , product});
     }catch(err){
         console.error(err);
@@ -74,11 +73,11 @@ const addCategoryHandler = async (req, res, next) => {
 
 const editProductHandler = async (req, res, next) => {
     const { id } = req.params;
-    const {name , description , price , stock , category_ids} = req.body;
+    const {name , description , price , stock , categoryIds} = req.body;
 
     try {
 
-        const product = await editProductService({id , name , description , price , stock , category_ids});
+        const product = await editProductService({id , name , description , price , stock , categoryIds});
         res.status(200).json({message : "Product edited successfully" , product});
 
     }catch(err){

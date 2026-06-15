@@ -69,6 +69,7 @@ const getOrderByIdAdminHandler = async(req,res,next) => {
     try{
         const orderId = parseInt(req.params.orderid);
         const order = await getOrderByIdAdminService(orderId);
+        if(!order) throw new Error("Order not found");
         res.status(200).json({message : "Order fetched successfully" , order});
     }catch(err){
         next(err);
@@ -82,6 +83,7 @@ const updateOrderStatusHandler = async(req,res,next) => {
         const status = req.body.status;
 
         const order = await updateOrderStatusService(orderId , status);
+        if(!order) throw new Error("Order not found");
         res.status(200).json({message : "Order status updated successfully" , order});
 
 

@@ -12,7 +12,7 @@ router.post("/" , restrictTo(["user"]) , validate(createOrderSchema) , createUse
 
 router.get("/getorder/:orderid" , restrictTo(["user"]) , getOrderByIdHandler );
 
-router.put("/cancel/:orderid" , restrictTo(["user"]) , validate(updateOrderStatusSchema) , orderCancellationHandler );
+router.put("/cancel/:orderid" , restrictTo(["user"]) , orderCancellationHandler );
 
 
 // ----------------ADMIN ROUTES--------------

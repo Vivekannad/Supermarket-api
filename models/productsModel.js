@@ -36,16 +36,16 @@ const getProductsByCategoryIdService = async (categoryId) => {
 const addProductService = async (product) => {
     // if a product category is not in the categories table then give error
     // if a product category is in the categories table then add the product in the products table and also fetch the category id from categories table and then add both product_id and category_id in the product_categories table
-    const { name, description, price,  stock , category_ids } = product;
+    const { name, description, price,  stock , categoryIds } = product;
 
     try{
         await pool.query("BEGIN");
 
         // check in the categories table if the category is already present or not
-        const foundedCategories = await pool.query("SELECT * FROM categories where id = ANY($1)", [category_ids]);
+        const foundedCategories = await pool.query("SELECT * FROM categories where id = ANY($1)", [categoryIds]);
     
         // if even one category is not present in the categories table fro the given category_ids from admin then we will give error to the admin to add the category first and then add the product
-        if(foundedCategories.rows.length != category_ids.length){
+        if(foundedCategories.rows.length != categoryIds.length){
             throw new Error("One or more categories are not present in the categories table. Please add the category first and then add the product.");
         }
         
@@ -56,7 +56,7 @@ const addProductService = async (product) => {
         const productId = productResult.rows[0].id;
 
         // add the product_id with the respective category_id in the product_cateogories table
-        for(let categoryId of category_ids){
+        for(let categoryId of categoryIds){
             await pool.query("INSERT INTO product_categories (product_id , category_id) values ($1 , $2)", [productId , categoryId]);
         }
 
@@ -110,13 +110,13 @@ const editProductService = async (product) => {
     // reason we are deleting first all the product records in the product_categories table is if the product has first 3 categories
     //  and then after updating we should have 2 , where would the third one go ? so we have to delete all the records first and then add the new ones
 
-    const { id , name , description , price , stock , category_ids } = product;
+    const { id , name , description , price , stock , categoryIds } = product;
     try {
         await pool.query("begin");
 
-        if(category_ids && category_ids.length > 0){
-            const result = await pool.query("SELECT * FROM categories where id = ANY($1)", [category_ids]);
-            if(result.rows.length != category_ids.length){
+        if(categoryIds && categoryIds.length > 0){
+            const result = await pool.query("SELECT * FROM categories where id = ANY($1)", [categoryIds]);
+            if(result.rows.length != categoryIds.length){
                 throw new Error("One or more categories are not present in the categories table. Please add the category first and then add the product.");
             }
         }
@@ -131,12 +131,12 @@ const editProductService = async (product) => {
         }
 
         // if there are category_ids to be changed , then delete the product record from product_categories table
-        if(category_ids && category_ids.length > 0){
+        if(categoryIds && categoryIds.length > 0){
             // deleting product record from product categories table
             await pool.query("DELETE FROM product_categories where product_id = $1", [id]);
             
             // adding product record in product categories table with updated product caetogories
-            for(let categoryId of category_ids){
+            for(let categoryId of categoryIds){
                 await pool.query("INSERT INTO product_categories (product_id , category_id) values ($1 , $2)", [id , categoryId]);
             }
         }
@@ -144,7 +144,7 @@ const editProductService = async (product) => {
         // commit the transaction
         await pool.query("COMMIT");
 
-        return result.rows[0];
+        return (await pool.query("SELECT * FROM products_view where product_id = $1", [result.rows[0].id])).rows[0];
     }catch(err) {
         await pool.query("ROLLBACK");
         throw err;

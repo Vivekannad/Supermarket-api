@@ -113,7 +113,7 @@ const getAllOrdersService = async() => {
 }
 
 const getOrderByIdAdminService = async(orderId) => {
-    const result = await pool.query("SELECT * FROM _view WHERE order_id = $1", [orderId]);
+    const result = await pool.query("SELECT * FROM orders_view WHERE order_id = $1", [orderId]);
     return result.rows[0];
 }
 
@@ -137,12 +137,12 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
     try {
         if(status === 'cancelled'){
             //if user cancels the order, first check if the order is not confirmed , is still in pending status.
-           if(order.status !== "pending"){
+           if(order.status != "pending"){
                 await pool.query("ROLLBACK");
                 throw new Error("Order is not in pending status");
            }
 
-           await pool.query("UPDATE orders set status = $1 where id = $2" , [status , orderId]);
+           const updatedResult = await pool.query("UPDATE orders set status = $1 where id = $2 RETURNING *" , [status , orderId]);
            
            // restocking the stock
 
@@ -151,7 +151,7 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
            for (const item of orderItems.rows){
                await pool.query("UPDATE products SET stock = stock + $1 WHERE id = $2", [item.quantity , item.product_id]);
            }
-
+           return updatedResult.rows[0];
         }
 
         if(order.status === 'cancelled'){
@@ -159,7 +159,7 @@ const updateOrderStatusService = async(orderId , status , userId = null) => {
             throw new Error("Order is already cancelled");
         }
         // updating the status of the order
-        const updatedResult =await pool.query("UPDATE orders SET status = $1 WHERE id = $2", [status , orderId]);
+        const updatedResult =await pool.query("UPDATE orders SET status = $1 WHERE id = $2 RETURNING *", [status , orderId]);
         
         if(status === "delivered"){
 
