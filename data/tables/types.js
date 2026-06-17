@@ -9,11 +9,6 @@ const createTypes = async () => {
     END $$;
 
     DO $$ BEGIN
-    CREATE TYPE payment_method AS ENUM ('COD', 'CARD');
-    Exception when duplicate_object then null;
-    END $$;
-
-    DO $$ BEGIN
     CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
     Exception when duplicate_object then null;
     END $$;
