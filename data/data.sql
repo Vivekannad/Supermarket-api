@@ -1,6 +1,5 @@
 CREATE TYPE user_role AS ENUM ('user', 'admin');
 CREATE TYPE order_status AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled');
-CREATE TYPE payment_method AS ENUM ('COD', 'CARD');
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed');
 
 CREATE TABLE IF NOT EXISTS users (
@@ -47,7 +46,8 @@ CREATE TABLE IF NOT EXISTS cart_items (
     product_id integer not null ,
     quantity integer not null check (quantity > 0) default 1 ,
     FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    UNIQUE(cart_id, product_id)
 )
 
 CREATE TABLE IF NOT EXISTS address (
@@ -59,16 +59,19 @@ CREATE TABLE IF NOT EXISTS address (
     zip VARCHAR(20) NOT NULL,
     country VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    unique(user_id)
 )
 
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
+    address_id INTEGER NOT NULL,
     total DECIMAL(10,2) NOT NULL,
     status order_status NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (address_id) REFERENCES address(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS order_items(
@@ -76,7 +79,7 @@ CREATE TABLE IF NOT EXISTS order_items(
     order_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity > 0),
-    price DECIMAL(10,2) NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
@@ -86,8 +89,9 @@ CREATE TABLE IF NOT EXISTS payment (
     id SERIAL PRIMARY KEY ,
     order_id INTEGER NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    method payment_method NOT NULL,
     status payment_status NOT NULL DEFAULT 'pending',
+    paid_at Timestamp,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    UNIQUE(order_id)
 )
