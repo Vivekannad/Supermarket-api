@@ -7,7 +7,6 @@ const createOrderView = async () => {
    CREATE OR REPLACE VIEW orders_view AS
         SELECT 
         o.id AS order_id,
-
         o.user_id as user_id,
         u.username AS username,
         o.status AS status,
