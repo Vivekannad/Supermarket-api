@@ -58,13 +58,20 @@ const getProductByIdHandler = async(req,res,next) => {
 // ======================= admin products controllers ====================
 
 const addProductHandler = async (req, res , next) => {
-    const {name='' , description= '', price = 0.00 , stock = 0, categoryIds=[]} = req.body;
+    let {name, description, price, stock, categoryIds} = req.body;
+    const image = req.file ? req.file.path : null;
+    console.log("image" , image);
     try {
         // add product 
-        const product = await addProductService({name , description , price , stock , categoryIds});
+        const product = await addProductService({
+                name ,
+             description ,
+             price : Number(price) ,
+             stock : Number(stock) ,
+             categoryIds :categoryIds ,
+             image});
         res.status(201).json({message : "Product added successfully" , product});
     }catch(err){
-        console.error(err);
         next(err);
     }
 }
@@ -83,10 +90,11 @@ const addCategoryHandler = async (req, res, next) => {
 const editProductHandler = async (req, res, next) => {
     const { id } = req.params;
     const {name , description , price , stock , categoryIds} = req.body;
+    const image = req.file ? req.file.path : null;
 
     try {
 
-        const product = await editProductService({id , name , description , price , stock , categoryIds});
+        const product = await editProductService({id , name , description , price , stock , categoryIds, image});
         if(!product) {
             return res.status(404).json({message : "Product not found"});
         }

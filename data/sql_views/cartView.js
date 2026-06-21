@@ -11,6 +11,7 @@ const cartView = async() => {
             p.id AS product_id,
             p.name AS product_name,
             p.price::float AS product_price,
+            p.image AS product_image,
             ci.quantity AS quantity,
             (ci.quantity * p.price)::float as sub_total
             from cart_items ci

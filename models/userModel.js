@@ -40,7 +40,20 @@ const updateUserAddressService = async(userId , address = {}) => {
 }
 
 const getUserOrdersService = async(userId) => {
-    const result = await pool.query(`SELECT * FROM orders_view WHERE user_id = $1 ` , [userId]);
+    const result = await pool.query(`SELECT * FROM orders_view WHERE user_id = $1 order by order_id desc ` , [userId]);
+    
+    //user can add multiple items to a single order
+    // we need to get all the items of each order separately
+    // let finalResult = [];
+
+    // // getting unique orders made by the user by fetching unique order ids
+    // const orderIds = new Set(result.rows.map(order => order.order_id));
+
+    // // getting all the items of the order separately
+    // for(const orderId of orderIds){
+    //     const orderItems = result.rows.filter(order => order.order_id === orderId);
+    //     finalResult.push(orderItems);
+    // }
     return result.rows;
 }
 

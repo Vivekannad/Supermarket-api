@@ -36,7 +36,7 @@ const getProductsByCategoryIdService = async (categoryId) => {
 const addProductService = async (product) => {
     // if a product category is not in the categories table then give error
     // if a product category is in the categories table then add the product in the products table and also fetch the category id from categories table and then add both product_id and category_id in the product_categories table
-    const { name, description, price,  stock , categoryIds } = product;
+    const { name, description, price,  stock , categoryIds, image } = product;
 
     try{
         await pool.query("BEGIN");
@@ -53,7 +53,7 @@ const addProductService = async (product) => {
         
         // now , here categories are already present in the categories table 
         // now , add the product in the products table first and then fetch that prouct_id and then add the product_id with the respective category_id in the product_cateogories table
-        const productResult = await pool.query("INSERT INTO products (name , description , stock , price) values ($1 , $2 , $3 ,$4) RETURNING *", [name , description , stock , price]);
+        const productResult = await pool.query("INSERT INTO products (name , description , stock , price, image) values ($1 , $2 , $3 ,$4, $5) RETURNING *", [name , description , stock , price, image]);
 
         const productId = productResult.rows[0].id;
 
@@ -114,7 +114,7 @@ const editProductService = async (product) => {
     // reason we are deleting first all the product records in the product_categories table is if the product has first 3 categories
     //  and then after updating we should have 2 , where would the third one go ? so we have to delete all the records first and then add the new ones
 
-    const { id , name , description , price , stock , categoryIds } = product;
+    const { id , name , description , price , stock , categoryIds, image } = product;
     try {
         await pool.query("begin");
 
@@ -128,7 +128,14 @@ const editProductService = async (product) => {
         // COALSCE is a function that handles null values
         // if first argument is null , then it will return the second argument
         const result = await pool.query(`UPDATE products SET
-           name = COALESCE($1, name), description = COALESCE($2, description) , price =  COALESCE($3, price) , stock = COALESCE($4 , stock) where id = $5 RETURNING *` , [name , description , price , stock , id]);
+            name = COALESCE($1, name),
+            description = COALESCE($2, description) ,
+            price =  COALESCE($3, price) ,
+            stock = COALESCE($4 , stock),
+            image = COALESCE($5 , image)
+            where id = $6 RETURNING *` , 
+            [name , description , price , stock , image,id]
+        );
 
         if(result.rows.length == 0){
             const err = new Error("Product not found");
@@ -161,7 +168,7 @@ const editProductService = async (product) => {
 const removeProductService = async (id) => {
     // first check if the product is present in the products table or not
     // If yes, then delete the product from products table
-    // then  , delete the product record from product_cateogories table
+    // then  , delete the product record from product_categories table
     try {
         const result = await pool.query("DELETE FROM products where id = $1 RETURNING *", [id]);
         if(result.rows.length == 0){

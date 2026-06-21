@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     price DECIMAL(10, 2) NOT NULL CHECK (price > 0),
     stock INTEGER NOT NULL,
+    image text,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

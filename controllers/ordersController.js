@@ -1,7 +1,7 @@
 
 // ------------------User Order Handlers ----------------
 
-const { getOrderByIdAdminService, getAllOrdersService, getOrderByIdService,  createUserOrderService, updateOrderStatusService } = require("../models/orderModel");
+const { getOrderByIdAdminService, getAllOrdersService, getOrderByIdService,  createUserOrderService, updateOrderStatusService, cancelOrderService } = require("../models/orderModel");
 
 const createUserOrderHandler = async(req,res , next) => {
     const cartItemsIds = req.body.cartItemIds;
@@ -45,7 +45,7 @@ const orderCancellationHandler = async(req,res,next) => {
 
         const orderId = parseInt(req.params.orderid);
         const userId = parseInt(req.user.id);
-        const order = await updateOrderStatusService(orderId , "cancelled" , userId);
+        const order = await cancelOrderService(orderId , userId);
         if(!order) {
            return res.status(404).json({message : "Order not found"});
         };

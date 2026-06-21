@@ -1,7 +1,6 @@
 const pool = require("../../src/config/db")
 
 const createProductsView = async () => {
- 
 
   await pool.query(`
     CREATE OR REPLACE VIEW products_view AS
@@ -9,6 +8,7 @@ const createProductsView = async () => {
       p.id            AS product_id,
       p.name          AS product_name,
       p.description   AS product_description,
+      p.image         AS product_image,
       p.price::float  AS product_price,
       p.stock         AS product_stock,
       p.created_at    AS product_created_at,

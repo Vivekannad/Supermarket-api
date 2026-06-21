@@ -11,7 +11,7 @@ const registerUserHandler = async(req,res , next) => {
         if(!registeredUser){
             return res.status(400).json({message : "User already exists"});
         }
-        res.status(201).json({message : "User registered successfully", user : { username : registeredUser.username} , email : registeredUser.email , role : registeredUser.role});
+        res.status(201).json({message : "User registered successfully", user : { username : registeredUser.username , email : registeredUser.email , role : registeredUser.role}});
     }catch(err){
         next(err);
     }
