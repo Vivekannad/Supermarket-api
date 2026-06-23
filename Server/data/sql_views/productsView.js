@@ -16,7 +16,7 @@ const createProductsView = async () => {
     FROM products p
     JOIN product_categories pc ON p.id = pc.product_id
     JOIN categories c ON pc.category_id = c.id
-    GROUP BY p.id
+    GROUP BY p.id;
   `);
 
   console.log('Products_view created successfully');

@@ -26,7 +26,7 @@ const createOrderView = async () => {
     JOIN order_items oi ON o.id = oi.order_id
     JOIN products p     ON p.id = oi.product_id
     JOIN users u        ON u.id = o.user_id
-    GROUP BY o.id, o.user_id, u.username, o.status, o.total
+    GROUP BY o.id, o.user_id, u.username, o.status, o.total;
   `);
 
   console.log('Orders_view created successfully');
