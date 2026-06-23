@@ -1,16 +1,16 @@
 const { cartView } = require("./sql_views/cartView");
 const { createOrderView } = require("./sql_views/orderView");
-const { createProductsView } = require("./sql_views/productsViews");
+const { createProductsView } = require("./sql_views/productsView");
 const { createAddressTable } = require("./tables/Address");
 const { createCartTable } = require("./tables/Cart");
 const { createCartItemsTable } = require("./tables/CartItems");
 const { createCategoriesTable } = require("./tables/Categories");
 const { createOrderItemsTable } = require("./tables/order_items");
 const { createOrdersTable } = require("./tables/Orders");
-const { createPaymentTable } = require("./tables/payment");
-const { createProductCategoriesTable } = require("./tables/ProductCategories");
+const { createPaymentTable } = require("./tables/Payment");
+const { createProductCategoriesTable } = require("./tables/Product_categories");
 const { createProductsTable } = require("./tables/Products");
-const { createTypes } = require("./tables/types");
+const { createTypes } = require("./tables/Types");
 const { createUserTable } = require("./tables/User");
 
 const initDB = async() => {
