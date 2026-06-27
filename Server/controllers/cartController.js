@@ -1,4 +1,4 @@
-const { findCartIdByUserIdService, addCartItemsService, removeFromCartService, viewCartService } = require("../models/cartModel");
+const { findCartIdByUserIdService, addCartItemsService, removeFromCartService, viewCartService, updateCartService } = require("../models/cartModel");
 
 const addToCartHandler = async(req,res , next) => {
     try {
@@ -39,9 +39,27 @@ const viewCartHandler = async(req,res, next) => {
     }
 }
 
+const updateCartHandler = async(req,res,next) => {
+    try{
+
+        const cartItemsId = (req.params.id);
+        const {quantity} = req.body;
+        const userId = Number(req.user.id);
+        const cartItem = await updateCartService(cartItemsId , quantity, userId);
+        if(!cartItem) {
+            return res.status(404).json({message : "Cart item not found"});
+        }
+        res.status(200).json({message : "Cart item updated successfully", cartItem});
+
+    }catch(err){
+        next(err);
+    }
+}
+
 
 module.exports = {
     addToCartHandler , 
     removeFromCartHandler , 
-    viewCartHandler
+    viewCartHandler,
+    updateCartHandler
 }

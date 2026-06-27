@@ -83,9 +83,25 @@ const viewCartService = async(userId) => {
     return result.rows;
 }
 
+const updateCartService = async(cartItemsId , quantity , userId) => {
+
+    const {rows : cartItem} = await pool.query("SELECT * FROM cart_view where cart_item_id = $1 " , [cartItemsId]);
+    
+    if(cartItem.length === 0) {
+        const err = new Error("Cart item not found");
+        err.statusCode = 404;
+        throw err;
+    }
+
+    const result = await pool.query("UPDATE cart_items SET quantity = $1 WHERE id = $2 and cart_id = (SELECT id FROM cart WHERE user_id = $3) RETURNING *", [quantity , cartItemsId , userId]);
+
+    return result.rows[0];
+  }
+
 module.exports = {
     findCartIdByUserIdService ,
     addCartItemsService , 
     removeFromCartService , 
-    viewCartService
+    viewCartService,
+    updateCartService
 }
