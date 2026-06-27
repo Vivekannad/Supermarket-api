@@ -65,7 +65,7 @@ export default function Home() {
         quantity: 1
       });
       setCartMsg(`${product.product_name} added to cart`);
-      addToCart(product.product_id, 1);
+      // addToCart(product.product_id, 1);
       
       setTimeout(() => setCartMsg(''), 2500);
     } catch (err) {
