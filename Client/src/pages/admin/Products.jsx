@@ -62,7 +62,7 @@ export default function AdminProducts() {
             <span className="ml-2 text-sm font-normal text-gray-400">({products.length})</span>
           </h1>
           <Link
-            to="/admin/addproduct"
+            to="/admin/products/add"
             className="text-sm px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition"
           >
             + Add product
