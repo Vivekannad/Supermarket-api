@@ -224,9 +224,9 @@ export default function AdminCategories() {
         </div>
  
         {/* Info note */}
-        <p className="text-xs text-gray-400 mt-4 text-center">
+        {/* <p className="text-xs text-gray-400 mt-4 text-center">
           Removing a category unlinks it from all products but does not delete the products themselves.
-        </p>
+        </p> */}
  
       </div>
     </div>

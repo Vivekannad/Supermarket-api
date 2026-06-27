@@ -198,10 +198,10 @@ export default function Cart() {
                   </div>
                 </div>
  
-                {/* Right side — subtotal + remove */}
+                {/* Right side — sub_total + remove */}
                 <div className="flex flex-col items-end justify-between shrink-0">
                   <span className="text-sm font-semibold text-gray-900">
-                    Rs. {item.subtotal?.toLocaleString()}
+                    Rs. {item.sub_total?.toLocaleString()}
                   </span>
                   <button
                     onClick={() => handleRemove(item.cart_item_id)}
@@ -227,7 +227,7 @@ export default function Cart() {
                     <span className="line-clamp-1 flex-1 mr-2">
                       {item.product_name} × {item.quantity}
                     </span>
-                    <span className="shrink-0">Rs. {item.subtotal?.toLocaleString()}</span>
+                    <span className="shrink-0">Rs. {item.sub_total?.toLocaleString()}</span>
                   </div>
                 ))}
               </div>
