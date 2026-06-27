@@ -4,7 +4,8 @@ const { initDB } = require('./data/init.js');
 const router = require('./routes/route.js');
 const app = express();
 const cors = require('cors');
-const port = 3000;
+require('dotenv').config();
+const port = process.env.PORT || 3000;
 
 
 // for parsing application/json
