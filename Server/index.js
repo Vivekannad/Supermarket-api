@@ -3,11 +3,13 @@ const { errorHandler } = require('./middlewares/errorHandler');
 const { initDB } = require('./data/init.js');
 const router = require('./routes/route.js');
 const app = express();
+const cors = require('cors');
 const port = 3000;
 
 
 // for parsing application/json
 app.use(express.json());
+app.use(cors());
 
 //testing route
 app.get('/', async (req, res) => {

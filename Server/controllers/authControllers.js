@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const { generateToken } = require("../utils/token");
 
 const registerUserHandler = async(req,res , next) => {
-    const {username , email , password , role} = req.body;
+    const {username , email , password , role="user"} = req.body;
     try{
         const hashedPassword = await bcrypt.hash(password , 10);
         const registeredUser = await registerUserService({username , email , password : hashedPassword , role});
@@ -36,7 +36,7 @@ const loginUserHandler = async(req,res , next) => {
 
         const token = generateToken(user);
 
-        res.status(200).json({message : "User logged in successfully", user: { username : user.username, email : user.email, role : user.role, token}});
+        res.status(200).json({message : "User logged in successfully", user: { username : user.username, email : user.email, role : user.role}, token});
     }catch(err){
         next(err);
     }

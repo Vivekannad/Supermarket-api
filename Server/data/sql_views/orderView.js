@@ -10,6 +10,7 @@ const createOrderView = async () => {
       o.user_id,
       u.username,
       o.status,
+      pa.status AS payment_status,
       o.total::float    AS total,
       ARRAY_AGG(
         json_build_object(
@@ -26,7 +27,8 @@ const createOrderView = async () => {
     JOIN order_items oi ON o.id = oi.order_id
     JOIN products p     ON p.id = oi.product_id
     JOIN users u        ON u.id = o.user_id
-    GROUP BY o.id, o.user_id, u.username, o.status, o.total;
+    JOIN payment pa      ON pa.order_id = o.id
+    GROUP BY o.id, o.user_id, u.username, o.status, o.total, pa.status;
   `);
 
   console.log('Orders_view created successfully');

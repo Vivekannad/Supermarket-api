@@ -1,7 +1,14 @@
 const pool = require("../src/config/db.js");
 
-const getAllProductsService = async (minprice, maxprice, limit, page) => {
-    const result = await pool.query("SELECT * FROM products_view WHERE product_price between $1 AND $2 LIMIT $3 OFFSET $4", [minprice, maxprice, limit, (page - 1) * limit]);
+const getAllProductsService = async (minprice, maxprice, limit, page, categoryId = 0, q="") => {
+    
+    let query = "SELECT * FROM products_view WHERE product_price between $1 AND $2 AND (product_name ILIKE '%' || $3 || '%') LIMIT $4 OFFSET $5";
+    let params = [ minprice, maxprice, q, limit, (page - 1) * limit ];
+    if(categoryId > 0){
+        query = "SELECT * FROM products_view WHERE product_price between $1 AND $2 AND (product_name ILIKE '%' || $3 || '%') AND product_id = ANY (SELECT product_id FROM product_categories WHERE category_id = $4)  LIMIT $5 OFFSET $6";
+        params = [ minprice, maxprice, q, categoryId, limit, (page - 1) * limit ];
+    }
+    const result = await pool.query(query, params);
     return result.rows;
 
 }
