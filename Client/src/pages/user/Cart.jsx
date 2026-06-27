@@ -31,7 +31,7 @@ export default function Cart() {
     if (newQty < 1) return;
     setUpdatingId(cartItemId);
     try {
-      await api.patch(`/cart/items/${cartItemId}`, { quantity: newQty });
+      await api.patch(`/cart/update/${cartItemId}`, { quantity: newQty });
       await fetchCart();
     } catch (err) {
       setError(err.response?.data?.message || 'Could not update quantity');
